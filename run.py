@@ -6,7 +6,7 @@ import re
 
 from envs import TradingEnv
 from agent import DQNAgent
-from utils import get_data, get_scaler, maybe_make_dir
+from utils import get_data, get_scaler, maybe_make_dir, plot_all
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     timestamp = time.strftime('%Y%m%d%H%M')
 
-    data = np.around(get_data())
+    data = get_data()
     train_data = data[:, :976]
     test_data = data[:, 976:]
 
@@ -45,6 +45,8 @@ if __name__ == '__main__':
         agent.load(args.weights)
         # when test, the timestamp is same as time when weights was trained
         timestamp = re.findall(r'\d{12}', args.weights)[0]
+        # daily_portfolio_value = [env.init_invest]
+        daily_portfolio_value = []
 
     for e in range(args.episode):
         state = env.reset()
@@ -55,6 +57,8 @@ if __name__ == '__main__':
             next_state = scaler.transform([next_state])
             if args.mode == 'train':
                 agent.remember(state, action, reward, next_state, done)
+            if args.mode == "test":
+                daily_portfolio_value.append(info['cur_val'])
             state = next_state
             if done:
                 print("episode: {}/{}, episode end value: {}".format(
@@ -66,6 +70,14 @@ if __name__ == '__main__':
         if args.mode == 'train' and (e + 1) % 10 == 0:  # checkpoint weights
             agent.save('weights/{}-dqn.h5'.format(timestamp))
 
+    print("mean portfolio_val:", np.mean(portfolio_value))
+    print("median portfolio_val:", np.median(portfolio_value))
     # save portfolio value history to disk
     with open('portfolio_val/{}-{}.p'.format(timestamp, args.mode), 'wb') as fp:
         pickle.dump(portfolio_value, fp)
+
+    # plot_all("all_set", daily_portfolio_value, env)
+    # with open('portfolio_val/{}-{}.p'.format(timestamp, args.mode), 'rb') as f:
+    #     data = pickle.load(f)
+    #     print('data>>>', data)
+

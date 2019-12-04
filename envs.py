@@ -5,6 +5,7 @@ import numpy as np
 import itertools
 
 
+
 class TradingEnv(gym.Env):
     """
   A 3-stock (MSFT, IBM, QCOM) trading environment.
@@ -24,7 +25,9 @@ class TradingEnv(gym.Env):
     def __init__(self, train_data, init_invest=20000):
         # data
         self.n_industry = 5
-        self.stock_price_history = np.around(train_data)  # round up to integer to reduce state space
+        # self.buy_date = [[] for _ in range(self.n_industry)]
+        # self.sell_date = [[] for _ in range(self.n_industry)]
+        self.stock_price_history = train_data # round up to integer to reduce state space
         self.n_stock, self.n_step = self.stock_price_history.shape
 
         # instance attributes
@@ -82,44 +85,23 @@ class TradingEnv(gym.Env):
         return np.sum(self.stock_owned * self.stock_price) + self.cash_in_hand
 
     def _trade(self, action):
-        # all combo to sell(0), hold(1), or buy(2) stocks
-        # action_combo = itertools.product([0, 1, 2], repeat=self.n_stock)
+
         action_combo = list(map(list, itertools.product([0, 1, 2], repeat=self.n_industry)))
         action_vec = action_combo[action]
-        # id = 0
-        # for i in action_combo:
-        #     if id == action:
-        #         action_vec = i
-        #         print(action)
-        #         print(action_vec)
-        #         break
-        #     id += 1
-        # print(action)
-        # print(action_vec)
-        # print("end")
-        # one pass to get sell/buy index
-        sell_index = []
-        buy_index = []
+
         for i, a in enumerate(action_vec):
             if a == 0:
-                sell_index.append(i)
-            elif a == 2:
-                buy_index.append(i)
-
-        # two passes: sell first, then buy; might be naive in real-world settings
-        if sell_index:
-            for i in sell_index:
-                for j in range(i, 4*i):
-                    if j < self.n_stock:
-                        self.cash_in_hand += self.stock_price[i] * self.stock_owned[i]
-                        self.stock_owned[i] = 0
-                    else:
-                        breakc
-        if buy_index:
-            for i in buy_index:
                 for j in range(i, 4 * i):
-                    if j < self.n_stock and self.cash_in_hand > self.stock_price[i]:
-                        self.stock_owned[i] += 1  # buy one share
-                        self.cash_in_hand -= self.stock_price[i]
+                    if j < self.n_stock:
+                        self.cash_in_hand += self.stock_price[j] * self.stock_owned[j]
+                        self.stock_owned[j] = 0
+
+                    else:
+                        break
+            elif a == 2:
+                for j in range(i, 4 * i):
+                    if j < self.n_stock and self.cash_in_hand > self.stock_price[i] * 200:
+                        self.stock_owned[j] += 200  # buy one share
+                        self.cash_in_hand -= self.stock_price[j] * 200
                     else:
                         break
