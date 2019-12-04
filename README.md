@@ -1,14 +1,12 @@
 
 ## Overview
 
-This is the code for [this](https://youtu.be/rRssY6FrTvU) video on Youtube by Siraj Raval on Q Learning for Trading as part of the Move 37 course at [School of AI](https://www.theschool.ai). Credits for this code go to [ShuaiW](https://github.com/ShuaiW/teach-machine-to-trade). 
-
-Related post: [Teach Machine to Trade](https://shuaiw.github.io/2018/02/11/teach-machine-to-trade.html)
+This code is mainly inspired by [ShuaiW](https://github.com/ShuaiW/teach-machine-to-trade).
 
 ### Dependencies
 
-Python 2.7. To install all the libraries, run `pip install -r requirements.txt`
-
+Python 3.6
+`pip install -r requirements.txt`
 
 ### Table of content
 
@@ -18,8 +16,7 @@ Python 2.7. To install all the libraries, run `pip install -r requirements.txt`
 * `utils.py`: some utility functions
 * `run.py`: train/test logic
 * `requirement.txt`: all dependencies
-* `data/`: 3 csv files with IBM, MSFT, and QCOM stock prices from Jan 3rd, 2000 to Dec 27, 2017 (5629 days). The data was retrieved using [Alpha Vantage API](https://www.alphavantage.co/)
-
+* `data/`: the csv file of stock table and history close price of 19 stocks
 
 ### How to run
 
