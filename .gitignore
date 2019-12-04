@@ -1,0 +1,5 @@
+data/
+weights/
+portfolio_val/
+.idea/
+__pycache__/
