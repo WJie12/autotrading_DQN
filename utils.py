@@ -9,11 +9,11 @@ import matplotlib.dates as mdate
 import matplotlib.dates as mdates
 
 
-def get_data(col='close'):
+def get_data(stock_name, stock_tabel):
     """ Returns a 3 x n_step array """
 
-    industry = pd.read_csv('data/stock_table.csv')["code"].astype("str")
-    data = pd.read_csv('data/all_set.csv').drop(columns="DateTime")
+    industry = pd.read_csv('data/{}.csv'.format(stock_tabel))["code"].astype("str")
+    data = pd.read_csv('data/{}.csv'.format(stock_name)).drop(columns="DateTime")
     data = data[industry].astype("float")
     data = np.array(data.T)
     return data

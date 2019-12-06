@@ -8,6 +8,9 @@ from envs import TradingEnv
 from agent import DQNAgent
 from utils import get_data, get_scaler, maybe_make_dir, plot_all
 
+stock_name = "all_set_1"
+stock_table = "stock_table_1"
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-e', '--episode', type=int, default=2000,
@@ -26,7 +29,7 @@ if __name__ == '__main__':
 
     timestamp = time.strftime('%Y%m%d%H%M')
 
-    data = get_data()
+    data = get_data(stock_name, stock_table)
     train_data = data[:, :976]
     test_data = data[:, 976:]
 
@@ -63,7 +66,10 @@ if __name__ == '__main__':
             if done:
                 print("episode: {}/{}, episode end value: {}".format(
                     e + 1, args.episode, info['cur_val']))
-                portfolio_value.append(info['cur_val'])  # append episode end portfolio value
+                portfolio_value.append(info['cur_val']) # append episode end portfolio value
+                if e % 100 == 0:
+                    plot_all(stock_name, daily_portfolio_value, env)
+                daily_portfolio_value = []
                 break
             if args.mode == 'train' and len(agent.memory) > args.batch_size:
                 agent.replay(args.batch_size)
@@ -76,7 +82,7 @@ if __name__ == '__main__':
     with open('portfolio_val/{}-{}.p'.format(timestamp, args.mode), 'wb') as fp:
         pickle.dump(portfolio_value, fp)
 
-    # plot_all("all_set", daily_portfolio_value, env)
+
     # with open('portfolio_val/{}-{}.p'.format(timestamp, args.mode), 'rb') as f:
     #     data = pickle.load(f)
     #     print('data>>>', data)
