@@ -8,7 +8,7 @@ from envs import TradingEnv
 from agent import DQNAgent
 from utils import get_data, get_scaler, maybe_make_dir, plot_all
 
-stock_name = "all_set_1"
+stock_name = "all_set_minute"
 stock_table = "stock_table_1"
 
 if __name__ == '__main__':
@@ -30,8 +30,11 @@ if __name__ == '__main__':
     timestamp = time.strftime('%Y%m%d%H%M')
 
     data = get_data(stock_name, stock_table)
-    train_data = data[:, :976]
-    test_data = data[:, 976:]
+    train = round(data.shape[1]*0.3)
+    test = round(data.shape[1]*0.7)
+    print("train:{}, test:{}".format(train, test))
+    train_data = data[:, :train]
+    test_data = data[:, test:]
 
     env = TradingEnv(train_data, args.initial_invest)
     state_size = env.observation_space.shape
@@ -62,14 +65,15 @@ if __name__ == '__main__':
                 agent.remember(state, action, reward, next_state, done)
             if args.mode == "test":
                 daily_portfolio_value.append(info['cur_val'])
+                if e % 100 == 0:
+                    pass
+                    plot_all(stock_name, daily_portfolio_value, env, test)
+                daily_portfolio_value = []
             state = next_state
             if done:
                 print("episode: {}/{}, episode end value: {}".format(
                     e + 1, args.episode, info['cur_val']))
                 portfolio_value.append(info['cur_val']) # append episode end portfolio value
-                if e % 100 == 0:
-                    plot_all(stock_name, daily_portfolio_value, env)
-                daily_portfolio_value = []
                 break
             if args.mode == 'train' and len(agent.memory) > args.batch_size:
                 agent.replay(args.batch_size)

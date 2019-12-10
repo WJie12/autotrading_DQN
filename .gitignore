@@ -1,2 +1,5 @@
 .idea/
 __pycache__/
+/data/
+/weights/
+/portfolio_val/
