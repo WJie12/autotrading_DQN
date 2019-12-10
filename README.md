@@ -26,15 +26,22 @@ Python 3.6
 
 ## Result
 
-1. old 19 stocks
+### old 19 stocks
+
 test: 500 episode
+
 mean portfolio_val: 17703.272
+
 median portfolio_val: 16994.000000000004
+
 ![old_pic](visulization/old.png)
 
-2. new 19 stocks
+### new 19 stocks
 test: 500 episode
+
 mean portfolio_val: 15256.06
+
 median portfolio_val: 15008.0
+
 ![new_pic](visulization/new.png)
 
