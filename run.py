@@ -8,7 +8,7 @@ from envs import TradingEnv
 from agent import DQNAgent
 from utils import get_data, get_scaler, maybe_make_dir, plot_all
 
-stock_name = "all_set_minute"
+stock_name = "all_set_1"
 stock_table = "stock_table_1"
 
 if __name__ == '__main__':
@@ -30,9 +30,12 @@ if __name__ == '__main__':
     timestamp = time.strftime('%Y%m%d%H%M')
 
     data = get_data(stock_name, stock_table)
-    train = round(data.shape[1]*0.3)
-    test = round(data.shape[1]*0.7)
-    print("train:{}, test:{}".format(train, test))
+    print(data.shape[1])
+    # train = round(data.shape[1]*0.98)
+    # test = round(data.shape[1]*0.99)
+    train = 979
+    test = 979
+    # print("train:{}, test:{}".format(data[:, train-1], data[:, test]))
     train_data = data[:, :train]
     test_data = data[:, test:]
 
@@ -65,20 +68,23 @@ if __name__ == '__main__':
                 agent.remember(state, action, reward, next_state, done)
             if args.mode == "test":
                 daily_portfolio_value.append(info['cur_val'])
-                if e % 100 == 0:
-                    pass
-                    plot_all(stock_name, daily_portfolio_value, env, test)
-                daily_portfolio_value = []
             state = next_state
             if done:
+
+                if args.mode == "test" and e % 100 == 0:
+                    plot_all(stock_name, daily_portfolio_value, env, test + 1)
+                daily_portfolio_value = []
                 print("episode: {}/{}, episode end value: {}".format(
                     e + 1, args.episode, info['cur_val']))
                 portfolio_value.append(info['cur_val']) # append episode end portfolio value
+
                 break
             if args.mode == 'train' and len(agent.memory) > args.batch_size:
                 agent.replay(args.batch_size)
         if args.mode == 'train' and (e + 1) % 10 == 0:  # checkpoint weights
             agent.save('weights/{}-dqn.h5'.format(timestamp))
+
+
 
     print("mean portfolio_val:", np.mean(portfolio_value))
     print("median portfolio_val:", np.median(portfolio_value))
