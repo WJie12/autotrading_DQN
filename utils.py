@@ -1,3 +1,4 @@
+import pickle
 from datetime import datetime
 import os
 from matplotlib import pyplot as plt
@@ -56,39 +57,54 @@ def buy_and_hold_benchmark(stock_name, init_invest, test):
 
 
 def plot_all(stock_name, daily_portfolio_value, env, test):
-    '''combined plots of plot_portfolio_transaction_history and plot_portfolio_performance_comparison'''
-    fig, ax = plt.subplots(2, 1, figsize=(16, 8), dpi=100)
-
-    portfolio_return = daily_portfolio_value[-1] - 20000
-    df = pd.read_csv('./data/{}.csv'.format(stock_name)).iloc[test:, :]
-    dates = df['DateTime'].astype("str")
-    dates = [datetime.strptime(d, '%Y%m%d').date() for d in dates]
+    """combined plots of plot_portfolio_transaction_history and plot_portfolio_performance_comparison"""
+    fig, ax = plt.subplots(1, 1, figsize=(16, 4), dpi=100)
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y%m%d'))
     plt.gca().xaxis.set_major_locator(mdates.DayLocator())
-    ax[0].set_title('{} Total Return on {}: ${:.2f}'.format("DQN", stock_name, portfolio_return))
-    ax[0].plot(dates, daily_portfolio_value, color='red', label=stock_name)
-    ax[0].set_ylabel('Price')
-    ax[0].xaxis.set_major_formatter(mdate.DateFormatter('%Y%m%d'))
-    ax[0].legend()
-    ax[0].grid()
 
-    dates, buy_and_hold_portfolio_values, buy_and_hold_return = buy_and_hold_benchmark(stock_name, env.init_invest, test)
+    dates, buy_and_hold_portfolio_values, buy_and_hold_return = buy_and_hold_benchmark(stock_name, env.init_invest,
+                                                                                       test)
     agent_return = daily_portfolio_value[-1] - env.init_invest
-    ax[1].set_title('{} vs. Buy and Hold'.format("DQN"))
+    ax.set_title('{} vs. Buy and Hold'.format("DQN"))
     dates = [datetime.strptime(d, '%Y%m%d').date() for d in dates]
-    ax[1].plot(dates, daily_portfolio_value, color='green',
-               label='{} Total Return: ${:.2f}'.format("DQN", agent_return))
-    ax[1].plot(dates, buy_and_hold_portfolio_values, color='blue',
-               label='{} Buy and Hold Total Return: ${:.2f}'.format(stock_name, buy_and_hold_return))
-    ax[1].set_ylabel('Portfolio Value (..)')
-    # print(len(dates),)
-    ax[1].xaxis.set_major_formatter(mdate.DateFormatter('%Y%m%d'))
+    ax.plot(dates, daily_portfolio_value, color='green',
+            label='{} Total Return: ${:.2f}'.format("DQN", agent_return))
+    ax.plot(dates, buy_and_hold_portfolio_values, color='blue',
+            label='{} Buy and Hold Total Return: ${:.2f}'.format(stock_name, buy_and_hold_return))
+    ax.set_ylabel('Portfolio Value (RMB)')
+
+    ax.xaxis.set_major_formatter(mdate.DateFormatter('%Y%m%d'))
     plt.xticks(pd.date_range('2018-1-02', '2019-08-22', freq='1m'))
-    # ax[1].set_xticks(np.linspace(0, len(df), 1))
-    ax[1].legend()
-    # ax[1].grid()
+    ax.legend()
     plt.gcf().autofmt_xdate()
     plt.subplots_adjust(hspace=0.5)
     plt.show()
 
+
+def visualize_portfolio_val():
+    """ visualize the portfolio_val file """
+    with open('portfolio_val/201912141307-train.p', 'rb') as f:
+        data = pickle.load(f)
+    with open('portfolio_val/201912042043-train.p', 'rb') as f:
+        data0 = pickle.load(f)
+    print(sum(data) / 4000)
+    print('data>>>', len(data))
+    fig, ax = plt.subplots(2, 1, figsize=(16, 8), dpi=100)
+
+    ax[0].plot(data0, linewidth=1)
+    ax[0].set_title('DQN Training Performance: 2000 episodes', fontsize=24)
+    ax[0].set_xlabel('episode', fontsize=24)
+    ax[0].set_ylabel('final portfolio value', fontsize=24)
+    ax[0].tick_params(axis='both', labelsize=12)
+
+    ax[1].plot(data, linewidth=1)
+    ax[1].set_title('DQN Training Performance: 4000 episodes', fontsize=24)
+    ax[1].set_xlabel('episode', fontsize=24)
+    ax[1].set_ylabel('final portfolio value', fontsize=24)
+    ax[1].tick_params(axis='both', labelsize=12)
+
+    plt.show()
+
+
+# visualize_portfolio_val()

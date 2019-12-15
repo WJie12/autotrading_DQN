@@ -8,8 +8,8 @@ from envs import TradingEnv
 from agent import DQNAgent
 from utils import get_data, get_scaler, maybe_make_dir, plot_all
 
-stock_name = "all_set_1"
-stock_table = "stock_table_1"
+stock_name = "all_set_2"
+stock_table = "stock_table_2"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -84,16 +84,9 @@ if __name__ == '__main__':
         if args.mode == 'train' and (e + 1) % 10 == 0:  # checkpoint weights
             agent.save('weights/{}-dqn.h5'.format(timestamp))
 
-
-
     print("mean portfolio_val:", np.mean(portfolio_value))
     print("median portfolio_val:", np.median(portfolio_value))
     # save portfolio value history to disk
     with open('portfolio_val/{}-{}.p'.format(timestamp, args.mode), 'wb') as fp:
         pickle.dump(portfolio_value, fp)
-
-
-    # with open('portfolio_val/{}-{}.p'.format(timestamp, args.mode), 'rb') as f:
-    #     data = pickle.load(f)
-    #     print('data>>>', data)
 

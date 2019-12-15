@@ -24,9 +24,28 @@ Python 3.6
 
 **To test the model performance**, run `python run.py --mode test --weights <trained_model>`, where `<trained_model>` points to the local model weights file. Test data portfolio value history at episode end would be saved to disk.
 
-## Result
+abbreviation|para|default|usage
+---|---|---|---
+-e | --episode| default=2000 |number of episode to run
+-b |--batch_size| default=32 |batch size for experience replay
+-i |--initial_invest |default=20000 | initial investment amount
+-m |--mode'| required=True |either "train" or "test"
+-w |--weights| required when mode = "test" | a trained model weights
 
-### old 19 stocks
+
+## Results
+
+### Training for 2000 episodes and 4000 episodes
+
+train：4000 episode
+
+mean portfolio_val: 116988.378
+
+median portfolio_val: 116565.0
+
+![old_pic](visualization/traing4000_2000.png)
+
+### Old 19 stocks
 
 test: 500 episode
 
@@ -34,14 +53,15 @@ mean portfolio_val: 17703.272
 
 median portfolio_val: 16994.000000000004
 
-![old_pic](visulization/old.png)
+![old_pic](visualization/old.png)
 
-### new 19 stocks
+### New 19 stocks
+
 test: 500 episode
 
 mean portfolio_val: 15256.06
 
 median portfolio_val: 15008.0
 
-![new_pic](visulization/new.png)
+![new_pic](visualization/new.png)
 
