@@ -8,8 +8,8 @@ from envs import TradingEnv
 from agent import DQNAgent
 from utils import get_data, get_scaler, maybe_make_dir, plot_all
 
-stock_name = "all_set_2"
-stock_table = "stock_table_2"
+stock_name = "all_set_1"
+stock_table = "stock_table_1"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -31,12 +31,12 @@ if __name__ == '__main__':
 
     data = get_data(stock_name, stock_table)
     print(data.shape[1])
-    # train = round(data.shape[1]*0.98)
+    train = round(data.shape[1]*0.98)
     # test = round(data.shape[1]*0.99)
-    train = 979
+    # train = 979
     test = 979
     # print("train:{}, test:{}".format(data[:, train-1], data[:, test]))
-    train_data = data[:, :train]
+    train_data = data[:, :test]
     test_data = data[:, test:]
 
     env = TradingEnv(train_data, args.initial_invest)
