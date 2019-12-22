@@ -9,7 +9,7 @@ The whole project consists three repos for three parts:
     * Generating datasets for DQN and DDPG based on the selected stocks
 2. [DQN](https://github.com/WJie12/autotrading_DQN):
     * Implement of trading agent based on DQN
-3. DDPG:
+3. [DDPG](https://github.com/morningsky/CS277-Project-DRL-in-Portfolio-Management):
     * Implement of trading agent based on DDPG
 
 This repo is for the DQN part.
