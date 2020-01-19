@@ -1,6 +1,6 @@
 # Introduction
 
-This repo is part of CS277 project: Deep Reinforcement Learning in Portfolio Management
+This repo is part of CS277 project: [Deep Reinforcement Learning in Portfolio Management](https://wjie12.github.io/2020/01/19/RL4PM/)
 
 The whole project consists three repos for three parts:
 1. [Preprocessing](https://github.com/WJie12/autotrading_preprocessing):
